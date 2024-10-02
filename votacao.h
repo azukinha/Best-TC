@@ -1,21 +1,11 @@
 #ifndef VOTACAO_H
 #define VOTACAO_H
 
+#include <stdbool.h>
+
 #define max 50
 #define maxNome 60
 #define maxSigla 10
-
-extern Professor docentes[max];
-extern int qtdeDocentes;
-
-Aluno formandos[max];
-int qntdeFormandos;
-
-TC listaTCs[max];
-int qtdeTCs;
-
-Eleitor comissao[max];
-int qtdeEleitores;
 
 typedef struct Pessoa Pessoa;
 struct Pessoa {
@@ -39,7 +29,7 @@ struct Aluno {
 };
 
 typedef struct TC TC;
-struct {
+struct TC {
     int codigo;
     int autor;
     int orientador;
@@ -53,5 +43,11 @@ struct Eleitor {
     bool votou;
     int codigoTC;
 };
+
+void menu1();
+void inicia_nova_votacao();
+void continua_votacao_gravada();
+bool valida_cpf(char cpf[]);
+char valida_opcao();
 
 #endif

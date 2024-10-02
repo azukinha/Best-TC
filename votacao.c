@@ -1,5 +1,7 @@
+#include <stdio.h>
 #include <ctype.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include "votacao.h"
 
 Professor docentes[max];
@@ -13,11 +15,6 @@ int qtdeTCs;
 
 Eleitor comissao[max];
 int qtdeEleitores;
-
-void menu1();
-void inicia_nova_votacao();
-void continua_votacao_gravada();
-char valida_opcao();
 
 void limpa_buffer() {
     int c;
@@ -96,8 +93,6 @@ void concluir_votacao(){
     FILE * resultado;
     resultado = fopen("resultado.txt", "w");
 
-
-
     fclose(resultado);
 }
 
@@ -105,8 +100,53 @@ int valida_arquivo(){
 
 }
 
-int valida_cpf(){
+int valida_cpf(char cpf[15]){
+    int soma1 = 0, soma2 = 0, j = 0, resto1, resto2;
+    
+    for(int i = 0; i < 14; i++){
+        if(i==3 || i==7){
+            if(cpf[i] != '.') return 0;} 
+            
+        if(i==11) {
+            if(cpf[i] != '-') return 0;}
+        
+        if((i!=3 && i!=7 && i!=11)){
+            if(!isdigit(cpf[i])) return 0;}
+    }
+    
+    for(int i = 0; i < 14; i++){
+        if(isdigit(cpf[i])){
+            if(cpf[i] == cpf[0]){
+                j++;}
+        }
+    }
 
+    if(j==11)return 0;
+    
+    j = 0;
+    
+    for(int i = 0; i < 11 && j < 10; i++){
+        if(isdigit(cpf[i])){
+            soma1 += (cpf[i] - '0') * (10-j);
+            j++;}
+    }
+
+    j = 0;
+
+    for(int i = 0; i < 13 && j < 10; i++){
+        if(isdigit(cpf[i])){
+            soma2 += (cpf[i] - '0') * (11-j);
+            j++;}
+    }
+
+    resto1 = (soma1 * 10) % 11;
+    resto1 = (resto1 == 10) ? 0 : resto1;
+    resto2 = (soma2 * 10) % 11;
+    resto2 = (resto2 == 10) ? 0 : resto2;
+
+    if(resto1 == (cpf[12] - '0') && resto2 == (cpf[13] - '0')){
+        return 1;} 
+    else{return 0;}
 }
 
 int valida_aluno(){
