@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include "votacao.h"
+#include <string.h>
 
 Professor docentes[max];
 int qtdeDocentes;
@@ -112,15 +113,12 @@ int valida_cpf(char cpf[15]){
         
         if((i!=3 && i!=7 && i!=11)){
             if(!isdigit(cpf[i])) return 0;}
-    }
-    
-    for(int i = 0; i < 14; i++){
+
         if(isdigit(cpf[i])){
             if(cpf[i] == cpf[0]){
-                j++;}
-        }
+                j++;}}
     }
-
+    
     if(j==11)return 0;
     
     j = 0;
@@ -149,14 +147,67 @@ int valida_cpf(char cpf[15]){
     else{return 0;}
 }
 
-int valida_aluno(){
-
+int get_codigo_aluno(void *aluno){
+    return ((Aluno*)aluno)->matricula;
 }
 
-int valida_professor(){
+int get_codigo_professor(void *professor){
+    return ((Professor*)professor)->codigo;
+}
 
+int valida_codigo(int codigo, void *vetor, int tamanho, int tam_elemento, int (*get_codigo)(void *)) {
+    for (int i = 0; i < tamanho; i++) {
+        void *elemento = (char*)vetor + i * tam_elemento;  
+        if (codigo == get_codigo(elemento)) {  
+            return 1;  
+        }
+    }
+    return 0;  
 }
 
 int valida_voto(){
 
+}
+
+int entra_com_voto(char cpf[15]){
+    printf("Digite o seu CPF: ");
+    scanf("%s", &cpf);
+
+    if(!valida_cpf(cpf)){
+        while(!valida_cpf(cpf)){
+            printf("CPF invalido. Digite novamente: \n");
+            limpa_buffer();
+            scanf("%s", &cpf);
+        }
+    }
+
+    if(!verifica_cpf_existe_comissao(cpf)){
+        while(!verifica_cpf_existe_comissao(cpf)){
+            printf("CPF nao esta na comissao. Digite novamente: \n");
+            limpa_buffer();
+            scanf("%s", &cpf);
+        }
+    }
+}
+
+int verifica_cpf_existe_comissao(char cpf){
+    int tamanho = sizeof(comissao)/sizeof(comissao[0]);
+
+    for(int i=0; i<tamanho; i++){
+        if(cpf == comissao[i].cpf){
+            return 1;
+        }
+    } return 0;
+}
+
+int verifica_arquivo_existe(FILE *arq){
+    FILE * arq;
+    arq = fopen(arq, "r");
+    if(arq == NULL){
+        return 0;
+    } else {
+        return 1;
+    }
+
+    fclose(arq);
 }
